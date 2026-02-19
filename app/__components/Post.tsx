@@ -20,7 +20,7 @@ export default function PostCard({ post }: { post: PostWithAuthor }) {
             className="rounded-full object-cover"
           />
           <div>
-            <h3 className="font-semibold text-gray-800">{post.author.name}</h3>
+            <h3 className="font-semibold text-gray-800">{post.author.firstName}</h3>
             <p className="text-sm text-gray-500"> {timeAgo(post.createdAt)} </p>
           </div>
         </div>

@@ -46,3 +46,7 @@ button {
 input {
   outline: none !important;
 }
+
+.container {
+  @apply w-[95%] md:w-[90%] lg:w-[80%] mx-auto;
+}

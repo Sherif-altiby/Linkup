@@ -1,4 +1,3 @@
-import Navbar from "./__components/Navbar";
 import LeftSideBar from "./__components/LeftSideBar";
 import RightSideBar from "./__components/RightSideBar";
 import PostCard from "./__components/Post";
@@ -24,8 +23,6 @@ export default async function Home() {
   return (
      <div>
         <main>
-   
-               <Navbar />
                 
                 <div className="flex gap-4 mt-5" >
                     <LeftSideBar />
