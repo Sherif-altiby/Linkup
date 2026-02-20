@@ -1,20 +1,26 @@
+import { getCurrentUser } from "@/lib/auth/currentUser"
 import Image from "next/image"
 
-const UserPage = () => {
+const UserPage = async () => {
+
+  const user = await getCurrentUser()
+
   return (
     <div className="container my-10" >
         <div className="flex flex-col md:flex-row gap-10" >
                 <div className="md:w-1/2 h-[calc(100vh-65px)] md:sticky top-10" >
-                        <img 
-                            src="https://images.pexels.com/photos/4438343/pexels-photo-4438343.jpeg" 
+                        <Image 
+                            src={user?.image || "/default-avatar.png"} 
                             alt="User profile image"
-                            className="w-44 h-44 rounded-full object-cover border-3 border-white mb-4"
+                            className="w-44 h-44 rounded-full object-contain border-3 border-white mb-4"
+                            width={176}
+                            height={176}
                         />
 
                         <div className="text-text-color bg-white p-6 rounded-lg shadow-md" >
-                                <h2 className="font-semibold text-3xl mb-3" >User Name</h2>
+                                <h2 className="font-semibold text-3xl mb-3" > {user?.name} </h2>
                                 <p className="mb-1 text-xl"> Bio: This is a sample user bio. </p>
-                                <p className="mb-1 text-xl"> Email: user@example.com </p>
+                                <p className="mb-1 text-xl"> Email: {user?.email} </p>
                                 <p className="mb-1 text-xl"> Location: Sample City </p>
                                 <p className="mb-1 text-xl"> phone: 123-456-7890 </p>
                         </div>
@@ -34,14 +40,14 @@ const UserPage = () => {
                                                <div className="flex items-center justify-between mb-4">
                                                  <div className="flex items-center gap-3">
                                                    <Image
-                                                     src="https://randomuser.me/api/portraits/men/32.jpg"
+                                                     src={user?.image || "/default-avatar.png"}
                                                      alt="avatar"
                                                      width={45}
                                                      height={45}
                                                      className="rounded-full object-cover"
                                                    />
                                                    <div>
-                                                     <h3 className="font-semibold text-gray-800"> user name </h3>
+                                                     <h3 className="font-semibold text-gray-800"> {user?.name} </h3>
                                                      <p className="text-sm text-gray-500"> 3 hours ago </p>
                                                    </div>
                                                  </div>

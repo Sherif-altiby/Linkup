@@ -1,11 +1,15 @@
+import { getCurrentUser } from "@/lib/auth/currentUser";
+import Image from "next/image";
 import Link from "next/link";
 import { CiSearch } from "react-icons/ci"
 import { IoMdNotifications } from "react-icons/io";
 import { IoChatbubble } from "react-icons/io5";
 import { IoHomeSharp } from "react-icons/io5";
 
+const Navbar = async () => {
 
-const Navbar = () => {
+  const user = await getCurrentUser()
+
   return (
     <nav className="bg-white flex items-center justify-between h-16 px-4 py-2" >
         <div className="flex items-center gap-5" >
@@ -20,7 +24,9 @@ const Navbar = () => {
             <div className="icon-bg-color w-10 h-10 rounded-full flex items-center justify-center cursor-pointer" > <IoHomeSharp /> </div>
             <div className="icon-bg-color w-10 h-10 rounded-full flex items-center justify-center cursor-pointer" > <IoChatbubble /> </div>
             <div className="icon-bg-color w-10 h-10 rounded-full flex items-center justify-center cursor-pointer" > <IoMdNotifications /> </div>
-            <div> user </div>
+            <Link className="w-10 h-10 rounded-full overflow-hidden" href={`/users/${user?.id}`} > 
+              <Image src={user?.image || "/default-avatar.png"} width={40} height={40} alt="User Avatar" /> 
+            </Link>
         </div>
     </nav>
   )
