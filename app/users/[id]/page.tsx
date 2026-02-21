@@ -1,12 +1,21 @@
+"use client"
+
+import CreatePost from "@/app/__components/CreatePost"
 import { getCurrentUser } from "@/lib/auth/currentUser"
+import { useUserStore } from "@/store/userStore"
 import Image from "next/image"
+import { useState } from "react"
 
-const UserPage = async () => {
+const UserPage = () => {
 
-  const user = await getCurrentUser()
+  const user = useUserStore((state) => state.user)
+
+  const [showCreatePost, setShowCreatePost] = useState(false)
 
   return (
     <div className="container my-10" >
+
+      <CreatePost show={showCreatePost} onClose={() => setShowCreatePost(false)} />
         <div className="flex flex-col md:flex-row gap-10" >
                 <div className="md:w-1/2 h-[calc(100vh-65px)] md:sticky top-10" >
                         <Image 
@@ -29,7 +38,8 @@ const UserPage = async () => {
 
                 <div className="md:w-1/2" >
  
-                          <button className="mb-5  w-40 bg-secondary-color p-2 rounded-md text-white text-xl cursor-pointer" > Create Post </button>
+                          <button className="mb-5  w-40 bg-secondary-color p-2 rounded-md text-white text-xl cursor-pointer" 
+                          onClick={() => setShowCreatePost(true)}> Create Post </button>
 
                           <div>
 

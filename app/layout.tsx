@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./__components/Navbar";
+import { getCurrentUser } from "@/lib/auth/currentUser";
+import UserInitializer from "@/lib/UserInitializer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,16 +21,16 @@ export const metadata: Metadata = {
   description: "LinkUp is a next-gen social platform to connect, chat, and discover content you love.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function RootLayout({ children, }: Readonly<{ children: React.ReactNode;}>) {
+
+    const user = await getCurrentUser()
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-primary-color text-text-color`}
       >
+        <UserInitializer user={user} />
           <Navbar />
         {children}
         <Toaster position="top-right" />
