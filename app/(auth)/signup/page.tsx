@@ -48,23 +48,27 @@ const page = () => {
             <h2 className='text-xl border-b border-gray-600 pb-3 mb-3 text-center' > Signup </h2>
           <div className='flex items-center gap-2' >
                 <div className='w-full' >
-                      <label htmlFor="first-name">First Name</label>
-                      <input type="text" id="first-name" name="first-name"  />
-                      {errors?.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
+                      <label htmlFor="name">Name</label>
+                      <input type="text" id="name" name="name"  />
+                      {errors?.name && <p className="text-red-500 text-sm">{errors.name}</p>}
                 </div>
+
                 <div className='w-full'>
-                      <label htmlFor="last-name">Last Name</label>
-                      <input type="text" id="last-name" name="last-name"  />
-                      {errors?.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
-                </div>
+                       <label htmlFor="email">Email</label>
+                       <input type="email" id="email" name="email"  />
+                           {errors?.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                 </div>
+                
           </div> 
 
           <div className='flex items-center gap-2'>
+
                  <div className='w-full'>
                        <label htmlFor="email">Email</label>
                        <input type="email" id="email" name="email"  />
                            {errors?.email && <p className="text-red-500 text-sm">{errors.email}</p>}
                  </div>
+                 
                  <div className='w-full'>
                        <label htmlFor="phone">Phone</label>
                        <input type="tel" id="phone" name="phone"  />
@@ -85,10 +89,10 @@ const page = () => {
                 </div>
           </div>
 
-                <button type="submit" className='bg-blue-500 text-white px-4 py-2 h-14 rounded-md hover:bg-blue-600 w-full' >Sign Up</button>
+                <button type="submit" className='bg-blue-500 text-white px-4 py-2 h-14 rounded-md hover:bg-blue-600 w-full mt-3' >Sign Up</button>
 
        </form>
-          <div className='flex flex-col md:flex-row items-center justify-between gap-2 mt-10' >
+          <div className='flex flex-col md:flex-row items-center justify-between gap-2 mt-5' >
                   <GoogleSignUpButton />
                   <FacebookSignUpButton />
           </div>

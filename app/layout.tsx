@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
-import Navbar from "./__components/Navbar";
+import Navbar from "./__components/home/Navbar";
 import { getCurrentUser } from "@/lib/auth/currentUser";
 import UserInitializer from "@/lib/UserInitializer";
 
