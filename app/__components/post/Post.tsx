@@ -11,6 +11,7 @@ import { FaCommentDots } from "react-icons/fa";
 import { BiRepost } from "react-icons/bi";
 import { useUserStore } from "@/store/userStore";
 import AddComment from "./AddComment";
+import Link from "next/link";
 
 export default function PostCard({
   post,
@@ -21,26 +22,17 @@ export default function PostCard({
   fetchPosts?: () => void;
   onEdit?: (post: any) => void;
 }) {
-
-
   const [show, setShow] = useState(false);
   const [showAddComment, setShowAddComment] = useState(false);
-  const user = useUserStore((state) => state.user)
-
-  // Check if current user already liked the post
-  const [likeCount, setLikeCount] = useState(post._count.likes || 0)
+  const user = useUserStore((state) => state.user);
+  const [likeCount, setLikeCount] = useState(post._count.likes || 0);
 
   const handlePostDelete = async (postId: string) => {
     try {
-      const res: any = await fetch(`/api/posts/${postId}`, {
-        method: "DELETE",
-      });
-
+      const res: any = await fetch(`/api/posts/${postId}`, { method: "DELETE" });
       if (res.ok) {
-         toast.success(res.message || "Post deleted successfully!");
-         fetchPosts && fetchPosts(); // Refetch posts to update UI
-      } else {
-        console.error("Failed to delete post");
+        toast.success(res.message || "Post deleted successfully!");
+        fetchPosts && fetchPosts();
       }
     } catch (error) {
       console.error(error);
@@ -49,52 +41,52 @@ export default function PostCard({
 
   const handleLike = async () => {
     try {
-      const res = await fetch(`/api/posts/${post.id}/like`, {
-        method: 'POST',
-      })
-      const data = await res.json()
-
+      const res = await fetch(`/api/posts/${post.id}/like`, { method: "POST" });
+      const data = await res.json();
       if (res.ok) {
-        setLikeCount((prev: number) => data.liked ? prev + 1 : prev - 1)
+        setLikeCount((prev: number) => (data.liked ? prev + 1 : prev - 1));
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-sm mb-6 p-5 relative">
+    <div className="w-full max-w-2xl mx-auto bg-gray-900 border border-gray-800 rounded-2xl shadow-xl mb-5 overflow-hidden relative">
       <PostDropdownMenu
         id={post.author.id}
         show={show}
         onClose={() => setShow(false)}
         onPostDeleted={() => handlePostDelete(post.id)}
         onEdit={() => {
-          onEdit &&  onEdit(post);
+          onEdit && onEdit(post);
           setShow(false);
         }}
       />
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <div className="flex items-center gap-3">
-          <Image
-            src={post.author.image || "/default-avatar.png"}
-            alt="avatar"
-            width={45}
-            height={45}
-            className="rounded-full object-cover"
-          />
+          <div className="relative">
+            <Image
+              src={post.author.image || "/default-avatar.png"}
+              alt="avatar"
+              width={44}
+              height={44}
+              className="rounded-full object-cover border-2 border-gray-700"
+            />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-gray-900" />
+          </div>
           <div>
-            <h3 className="font-semibold text-gray-800">
+            <h3 className="font-semibold text-gray-100 text-sm leading-tight">
               {post.author.name}
             </h3>
-            <p className="text-sm text-gray-500"> {timeAgo(post.createdAt)} </p>
+            <p className="text-xs text-gray-500 mt-0.5">{timeAgo(post.createdAt)}</p>
           </div>
         </div>
 
         <button
-          className="text-gray-400 hover:text-gray-600 text-xl"
+          className="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:text-amber-500 hover:bg-gray-800 transition-all duration-200 text-lg leading-none"
           onClick={() => setShow((prev) => !prev)}
         >
           •••
@@ -102,51 +94,78 @@ export default function PostCard({
       </div>
 
       {/* Content */}
-      <p className="text-gray-700 leading-relaxed mb-4">{post.content}</p>
+      <div className="px-5 pb-4">
+        <p className="text-gray-300 text-sm leading-relaxed">{post.content}</p>
+      </div>
 
       {/* Post Image */}
       {post.image && (
-        <div className="relative w-full h-72 rounded-xl overflow-hidden mb-4">
+        <div className="relative w-full h-72 overflow-hidden border-y border-gray-800">
           <Image
             src={post.image}
             alt="post image"
-            className="object-cover w-full h-full"
-            width={100}
-            height={100}
+            className="object-cover w-full h-full hover:scale-105 transition-transform duration-500"
+            width={800}
+            height={400}
           />
         </div>
       )}
 
-      {(post._count.likes || post._count.comments) > 0 && (
-        
-          <div className="flex items-center justify-between" >
-              <p className="text-sm text-gray-500 mb-2"> {post._count.likes} {post._count.likes === 1 ? 'Like' : 'Likes'} </p>
-              <p className="text-sm text-gray-500 mb-2"> {post._count.comments} {post._count.comments === 1 ? 'Comment' : 'Comments'} </p>
-          </div>
-
+      {/* Like / Comment counts */}
+      {(post._count.likes > 0 || post._count.comments > 0) && (
+        <div className="flex items-center justify-between px-5 py-2.5 border-b border-gray-800">
+          {post._count.likes > 0 && (
+            <div className="flex items-center gap-1.5">
+              <span className="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
+                <AiFillLike className="text-gray-900 text-[10px]" />
+              </span>
+              <span className="text-xs text-gray-500">
+                {likeCount} {likeCount === 1 ? "Like" : "Likes"}
+              </span>
+            </div>
+          )}
+          {post._count.comments > 0 && (
+            <Link href={`comments/${post.id}`} className="text-xs text-gray-500 ml-auto">
+              {post._count.comments} {post._count.comments === 1 ? "Comment" : "Comments"}
+            </Link>
+          )}
+        </div>
       )}
-  
 
       {/* Actions */}
-      <div className="flex justify-between border-t pt-3 text-gray-500">
-        <button className={`flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg transition w-full justify-center ${post.isLikedByCurrentUser ? 'text-blue-500' : ''}`}
+      <div className="flex items-center px-3 py-1">
+        <button
           onClick={handleLike}
+          className={`flex items-center gap-2 flex-1 justify-center py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-gray-800 ${
+            post.isLikedByCurrentUser ? "text-amber-500" : "text-gray-500 hover:text-amber-500"
+          }`}
         >
-          <AiFillLike /> <p> Like </p>
+          <AiFillLike className="text-base" />
+          <span>Like</span>
         </button>
 
-        <button className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg transition w-full justify-center"
+        <button
           onClick={() => setShowAddComment((prev) => !prev)}
+          className={`flex items-center gap-2 flex-1 justify-center py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-gray-800 hover:text-amber-500 ${
+            showAddComment ? "text-amber-500" : "text-gray-500"
+          }`}
         >
-          <FaCommentDots /> <p> Comment </p>
+          <FaCommentDots className="text-base" />
+          <p >Comment</p>
         </button>
 
-        <button className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg transition w-full justify-center">
-          <BiRepost /> <p> Repost </p>
+        <button className="flex items-center gap-2 flex-1 justify-center py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-gray-800 hover:text-amber-500 transition-all duration-200">
+          <BiRepost className="text-lg" />
+          <span>Repost</span>
         </button>
       </div>
 
-      {showAddComment && <AddComment postId={post.id} />}
+      {/* Add Comment */}
+      {showAddComment && (
+        <div className="border-t border-gray-800 px-5 py-4">
+          <AddComment postId={post.id} />
+        </div>
+      )}
     </div>
   );
 }

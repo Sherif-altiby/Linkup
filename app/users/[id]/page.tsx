@@ -2,6 +2,7 @@
 
 import CreatePost from "@/app/__components/post/CreatePost";
 import PostCard from "@/app/__components/post/Post";
+import UserInfo from "@/app/__components/user/UserInfo";
 import PostSkeleton from "@/skeletons/PostSkeleton";
 import { usePostsStore } from "@/store/postStore";
 import { useUserStore } from "@/store/userStore";
@@ -9,8 +10,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const UserPage = () => {
-    const user = useUserStore((state) => state.user);
-    const { posts, loading, fetchUserPosts } = usePostsStore();
+  const user = useUserStore((state) => state.user);
+  const { posts, loading, fetchUserPosts } = usePostsStore();
 
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [editPost, setEditPost] = useState<{
@@ -18,7 +19,6 @@ const UserPage = () => {
     content: string;
     image: string | null;
   } | null>(null);
-
 
   useEffect(() => {
     if (!user?.id) return;
@@ -30,38 +30,25 @@ const UserPage = () => {
     <div className="container my-10">
       <CreatePost
         show={showCreatePost || !!editPost}
-        onClose={() => { setShowCreatePost(false); setEditPost(null) }}
+        onClose={() => {
+          setShowCreatePost(false);
+          setEditPost(null);
+        }}
         onPostCreated={() => fetchUserPosts(user?.id || "")}
-        mode={editPost ? 'edit' : 'create'}
+        mode={editPost ? "edit" : "create"}
         postId={editPost?.id}
         initialContent={editPost?.content}
         initialImage={editPost?.image}
       />
       <div className="flex flex-col md:flex-row gap-10">
-        <div className="md:w-1/2 h-[calc(100vh-65px)] md:sticky top-10">
-          <Image
-            src={user?.image || "/default-avatar.png"}
-            alt="User profile image"
-            className="w-44 h-44 rounded-full object-contain border-3 border-white mb-4"
-            width={176}
-            height={176}
-          />
-
-          <div className="text-text-color bg-white p-6 rounded-lg shadow-md">
-            <h2 className="font-semibold text-3xl mb-3"> {user?.name} </h2>
-            <p className="mb-1 text-xl"> Bio: This is a sample user bio. </p>
-            <p className="mb-1 text-xl"> Email: {user?.email} </p>
-            <p className="mb-1 text-xl"> Location: Sample City </p>
-            <p className="mb-1 text-xl"> phone: 123-456-7890 </p>
-          </div>
-        </div>
+        <UserInfo />
 
         <div className="md:w-1/2">
           <button
             className="mb-5  w-40 bg-secondary-color p-2 rounded-md text-white text-xl cursor-pointer"
             onClick={() => setShowCreatePost(true)}
           >
-            Create Post 
+            Create Post
           </button>
 
           <div>
@@ -69,17 +56,43 @@ const UserPage = () => {
               <PostSkeleton />
             ) : (
               posts.map((post: any) => (
-                <PostCard 
-                    key={post.id} 
-                    post={post} 
-                    fetchPosts={() => fetchUserPosts(user?.id || "")} 
-                    onEdit={(post: any) => setEditPost({ id: post.id, content: post.content, image: post.image })}
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  fetchPosts={() => fetchUserPosts(user?.id || "")}
+                  onEdit={(post: any) =>
+                    setEditPost({
+                      id: post.id,
+                      content: post.content,
+                      image: post.image,
+                    })
+                  }
                 />
               ))
             )}
 
             {!loading && posts.length === 0 && (
-              <p className="text-center p-5 rounded-md mt-10 w-full bg-white text-(--secondary-color) text-xl">No posts found.</p>
+              <div className="w-full max-w-2xl mx-auto mt-10 bg-gray-900 border border-gray-800 rounded-2xl p-10 flex flex-col items-center gap-4">
+                <div className="w-14 h-14 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center">
+                  <svg
+                    className="w-6 h-6 text-gray-600"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  >
+                    <path d="M19 11H5m14 0a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2m14 0V9a2 2 0 0 0-2-2M5 11V9a2 2 0 0 1 2-2m0 0V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2M7 7h10" />
+                  </svg>
+                </div>
+                <div className="text-center">
+                  <p className="text-gray-200 font-semibold text-base mb-1">
+                    No posts yet
+                  </p>
+                  <p className="text-gray-600 text-sm">
+                    When posts are shared, they'll appear here.
+                  </p>
+                </div>
+              </div>
             )}
           </div>
         </div>

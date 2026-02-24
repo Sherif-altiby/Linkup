@@ -21,53 +21,61 @@ const PostDropdownMenu = ({
   onPostDeleted: () => void;
   onEdit: () => void;
 }) => {
-  
   const user = useUserStore((state) => state.user);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  return (
-    <div
-      className={`absolute top-3 right-3 bg-white shadow-md rounded-md z-10 w-34 text-text-secondary-color ${show ? "block" : "hidden"}`}
-    >
-      <div className="flex justify-end px-2 pt-2 mb-2">
-        <IoMdCloseCircle
-          size={20}
-          onClick={onClose}
-          className="cursor-pointer text-gray-400 hover:text-red-500 transition"
-        />
-      </div>
+  if (!show) return null;
 
-      {user?.id === id ? (
-        <div>
-          <div className="flex items-center justify-between gap-2 hover:bg-gray-100 px-2 py-3 rounded-lg transition cursor-pointer"
-                      onClick={() => { onEdit(); onClose(); }} >
-            <RiEditFill size={20} />
-            <p>Edit</p>
-          </div>
-          <div
-            className="flex items-center justify-between gap-2 hover:bg-gray-100 px-2 py-3 rounded-lg transition cursor-pointer"
-            onClick={() => {
-              setDeleteLoading(true);
-              onPostDeleted();
-            }}
-          >
-            <MdDelete size={20} />
-            <p> {deleteLoading ? "Deleting..." : "Delete"} </p>
-          </div>
-        </div>
-      ) : (
-        <div>
-          <div className="flex items-center justify-between gap-2 hover:bg-gray-100 px-2 py-3 rounded-lg transition cursor-pointer">
-            <p>Save</p>
-            <MdBookmark size={20} />
-          </div>
-          <div className="flex items-center justify-between gap-2 hover:bg-gray-100 px-2 py-3 rounded-lg transition cursor-pointer">
-            <p>Follow</p>
-            <IoAddCircleSharp size={20} />
-          </div>
-        </div>
-      )}
-    </div>
+  return (
+    <>
+      {/* Click outside to close */}
+      <div className="fixed inset-0 z-10" onClick={onClose} />
+
+      <div className="absolute top-10 right-3 z-20 w-44 bg-gray-900 border border-gray-700 rounded-md shadow-xl overflow-hidden">
+
+        {user?.id === id ? (
+          <>
+            {/* Edit */}
+            <button
+              onClick={() => { onEdit(); onClose(); }}
+              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-800 hover:text-amber-500 transition-all duration-150"
+            >
+              <RiEditFill className="text-base shrink-0" />
+              <span>Edit Post</span>
+            </button>
+
+            {/* Divider */}
+            <div className="h-px bg-gray-800 mx-3" />
+
+            {/* Delete */}
+            <button
+              onClick={() => { setDeleteLoading(true); onPostDeleted(); }}
+              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-gray-300 hover:bg-red-500/10 hover:text-red-400 transition-all duration-150"
+            >
+              <MdDelete className="text-base shrink-0" />
+              <span>{deleteLoading ? "Deleting..." : "Delete Post"}</span>
+            </button>
+          </>
+        ) : (
+          <>
+            {/* Save */}
+            <button className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-800 hover:text-amber-500 transition-all duration-150">
+              <MdBookmark className="text-base shrink-0" />
+              <span>Save Post</span>
+            </button>
+
+            {/* Divider */}
+            <div className="h-px bg-gray-800 mx-3" />
+
+            {/* Follow */}
+            <button className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-800 hover:text-amber-500 transition-all duration-150">
+              <IoAddCircleSharp className="text-base shrink-0" />
+              <span>Follow User</span>
+            </button>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 
