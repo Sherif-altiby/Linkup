@@ -1,4 +1,4 @@
-import { Post } from "../generated/prisma/client";
+import { Comment, Post } from "../generated/prisma/client";
 
 
 export type PostWithAuthor = Post & {
@@ -14,6 +14,13 @@ export type PostWithAuthor = Post & {
   }
 }
 
+export type PostComment = Comment & {
+   author: {
+     id: string;
+     name: string;
+     image: string
+   }
+}
 
 export interface CreatePostProps {
   onClose: () => void

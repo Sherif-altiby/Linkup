@@ -1,6 +1,43 @@
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
 
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }  
+) {
+  try {
+    const { id } = await params  
+
+    const post = await prisma.post.findUnique({
+      where: { id },
+      include: {
+         author: {
+            select: {
+               name: true,
+               image: true
+            }
+         },
+          _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+      }
+    })
+
+    if (!post) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 })
+    }
+
+    return NextResponse.json(post, { status: 200 });
+
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to delete post" }, { status: 500 })
+  }
+}
+
+
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }  
