@@ -27,7 +27,6 @@ const page = () => {
     }
   }
 
-  const inputClass = "w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-3 py-2.5 text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition-all duration-200"
 
   return (
     <div className="min-h-screen w-full bg-gray-950 flex items-center justify-center p-5">
@@ -58,7 +57,7 @@ const page = () => {
                   id="email"
                   name="email"
                   placeholder="your@email.com"
-                  className={inputClass}
+                  className="inp-ctm"
                 />
               </div>
               {errors?.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
@@ -75,7 +74,7 @@ const page = () => {
                   id="password"
                   name="password"
                   placeholder="••••••••"
-                  className={`${inputClass} pr-10`}
+                  className="inp-ctm"
                 />
                 <button
                   type="button"
@@ -115,7 +114,7 @@ const page = () => {
           </div>
 
           {/* OAuth */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid md:grid-cols-2 gap-3">
             <GoogleSignUpButton />
             <FacebookSignUpButton />
           </div>

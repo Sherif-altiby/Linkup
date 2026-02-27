@@ -4,7 +4,7 @@ import FacebookSignUpButton from '@/app/__components/auth/FacebookSignUpButton'
 import GoogleSignUpButton from '@/app/__components/auth/GoogleSignUpButton'
 import { signup } from '@/app/actions/auth'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import toast from 'react-hot-toast'
 
 const page = () => {
@@ -28,8 +28,6 @@ const page = () => {
     }
   }
 
-  const inputClass = "w-full bg-gray-800 border border-gray-700 rounded-xl text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition-all duration-200"
-
   return (
     <div className="min-h-screen w-full bg-gray-950 flex items-center justify-center p-5">
       <div className="w-full max-w-xl bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl overflow-hidden">
@@ -48,19 +46,13 @@ const page = () => {
           <form action={handleSubmit} className="space-y-4">
 
             {/* Name + Email */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium tracking-widest uppercase text-gray-500 mb-2">
                   Name
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none">
-                    {/* <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                      <circle cx="12" cy="7" r="4" />
-                    </svg> */}
-                  </span>
-                  <input type="text" id="name" name="name" placeholder="Your name" className={inputClass} />
+                  <input type="text" id="name" name="name" placeholder="Your name" className="inp-ctm" />
                 </div>
                 {errors?.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
               </div>
@@ -71,7 +63,7 @@ const page = () => {
                 </label>
                 <div className="relative">
                   
-                  <input type="email" id="email" name="email" placeholder="your@email.com" className={inputClass} />
+                  <input type="email" id="email" name="email" placeholder="your@email.com" className="inp-ctm" />
                 </div>
                 {errors?.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
               </div>
@@ -84,13 +76,13 @@ const page = () => {
               </label>
               <div className="relative">
                 
-                <input type="tel" id="phone" name="phone" placeholder="+1 (555) 000-0000" className={inputClass} />
+                <input type="tel" id="phone" name="phone" placeholder="+1 (555) 000-0000" className="inp-ctm" />
               </div>
               {errors?.phone && <p className="text-red-400 text-xs mt-1">{errors.phone}</p>}
             </div>
 
             {/* Password + Confirm */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium tracking-widest uppercase text-gray-500 mb-2">
                   Password
@@ -102,7 +94,7 @@ const page = () => {
                     id="password"
                     name="password"
                     placeholder="••••••••"
-                    className={`${inputClass} pr-10`}
+                    className="inp-ctm"
                   />
                   <button
                     type="button"
@@ -136,7 +128,7 @@ const page = () => {
                     id="confirm-password"
                     name="confirm-password"
                     placeholder="••••••••"
-                    className={`${inputClass} pr-10`}
+                    className="inp-ctm"
                   />
                   <button
                     type="button"
@@ -172,12 +164,12 @@ const page = () => {
           {/* Divider */}
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-gray-800" />
-            <span className="text-xs font-medium tracking-widest uppercase text-gray-600">or continue with</span>
+                <span className="text-xs font-medium tracking-widest uppercase text-gray-600">or continue with</span>
             <div className="flex-1 h-px bg-gray-800" />
           </div>
 
           {/* OAuth */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid md:grid-cols-2 gap-3">
             <GoogleSignUpButton />
             <FacebookSignUpButton />
           </div>

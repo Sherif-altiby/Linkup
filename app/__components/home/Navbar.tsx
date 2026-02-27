@@ -10,7 +10,7 @@ const Navbar = async () => {
   const user = await getCurrentUser();
 
   return (
-    <nav className="bg-gray-900 border-b border-gray-800 flex items-center justify-between h-16 px-6 sticky top-0 z-50 shadow-lg shadow-black/20">
+    <nav className="bg-gray-900 border-b border-gray-800 flex items-center justify-between h-16 px-2 md:px-6 sticky top-0 z-50 shadow-lg shadow-black/20">
 
       {/* Left — Logo + Search */}
       <div className="flex items-center gap-4">
