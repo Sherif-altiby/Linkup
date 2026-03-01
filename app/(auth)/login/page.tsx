@@ -2,31 +2,41 @@
 
 import FacebookSignUpButton from '@/app/__components/auth/FacebookSignUpButton'
 import GoogleSignUpButton from '@/app/__components/auth/GoogleSignUpButton'
-import { login } from '@/app/actions/auth'
 import Link from 'next/link'
 import { useState } from 'react'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 const page = () => {
+  const router = useRouter()
   const [errors, setErrors] = useState<any>(null)
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(formData: FormData) {
-    try {
-      const result = await login(formData)
-      if (!result.success) {
-        toast.error(result.message || "Failed to login. Please check the form.")
-        if (result.errors) setErrors(result.errors)
-        return
-      }
-      toast.success("Login successful! Redirecting...")
-      setTimeout(() => { window.location.href = "/" }, 1500)
-    } catch (err: any) {
-      console.error(err)
-      toast.error("Something went wrong. Please try again.")
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setLoading(true)
+
+    const formData = new FormData(e.currentTarget)
+
+    const result = await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      redirect: false,
+    })
+
+    setLoading(false)
+
+    if (result?.error) {
+      toast.error("Invalid email or password")
+      return
     }
-  }
 
+    toast.success("Login successful! Redirecting...")
+    router.push("/")
+    router.refresh()
+  }
 
   return (
     <div className="min-h-screen w-full bg-gray-950 flex items-center justify-center p-5">
@@ -43,7 +53,7 @@ const page = () => {
         </div>
 
         <div className="px-8 py-6">
-          <form action={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
 
             {/* Email */}
             <div>
@@ -51,7 +61,6 @@ const page = () => {
                 Email
               </label>
               <div className="relative">
-                
                 <input
                   type="email"
                   id="email"
@@ -69,7 +78,7 @@ const page = () => {
                 Password
               </label>
               <div className="relative">
-                              <input
+                <input
                   type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
@@ -100,9 +109,10 @@ const page = () => {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full py-2.5 mt-2 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-sm font-semibold text-gray-950 tracking-wide uppercase transition-all duration-200 shadow-lg shadow-amber-500/20"
+              disabled={loading}
+              className="w-full py-2.5 mt-2 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-sm font-semibold text-gray-950 tracking-wide uppercase transition-all duration-200 shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Log In
+              {loading ? "Logging in..." : "Log In"}
             </button>
           </form>
 

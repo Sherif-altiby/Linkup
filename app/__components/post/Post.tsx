@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 import { AiFillLike } from "react-icons/ai";
 import { FaCommentDots } from "react-icons/fa";
 import { BiRepost } from "react-icons/bi";
-import { useUserStore } from "@/store/userStore";
 import AddComment from "./AddComment";
 import Link from "next/link";
 
@@ -24,8 +23,11 @@ export default function PostCard({
 }) {
   const [show, setShow] = useState(false);
   const [showAddComment, setShowAddComment] = useState(false);
-  const user = useUserStore((state) => state.user);
-  const [likeCount, setLikeCount] = useState(post._count.likes || 0);
+
+  const [likeCount, setLikeCount] = useState(post?._count?.likes || 0);
+  const [comentCount, setCommentCont] = useState(post?._count?.comments || 0);
+
+  console.log("POST",  post)
 
   const handlePostDelete = async (postId: string) => {
     try {
@@ -68,13 +70,15 @@ export default function PostCard({
       <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Image
-              src={post.author.image || "/default-avatar.png"}
-              alt="avatar"
-              width={44}
-              height={44}
-              className="rounded-full object-cover border-2 border-gray-700"
-            />
+            <Link href={`/users/${post.authorId}`}>
+                        <Image
+                          src={post.author.image || "/default-avatar.png"}
+                          alt="avatar"
+                          width={44}
+                          height={44}
+                          className="rounded-full object-cover border-2 border-gray-700"
+                       />
+             </Link>
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-gray-900" />
           </div>
           <div>
@@ -112,9 +116,9 @@ export default function PostCard({
       )}
 
       {/* Like / Comment counts */}
-      {(post._count.likes > 0 || post._count.comments > 0) && (
+      {(likeCount > 0 || comentCount > 0) && (
         <div className="flex items-center justify-between px-5 py-2.5 border-b border-gray-800">
-          {post._count.likes > 0 && (
+          {post?._count?.likes > 0 && (
             <div className="flex items-center gap-1.5">
               <span className="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
                 <AiFillLike className="text-gray-900 text-[10px]" />

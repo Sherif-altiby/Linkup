@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import PostCard from "../post/Post";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import UserAddPostFromFeed from "../user/UserAddPostFromFeed";
 
 
 const Feed = async () => {
@@ -19,11 +20,18 @@ const Feed = async () => {
       author: {
         select: {
           id: true,
-          name: true,
+          name: true, 
           image: true,
         },
       },
-      likes: true,
+
+       _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+      
     },
     orderBy: {
       createdAt: "desc",
@@ -32,6 +40,7 @@ const Feed = async () => {
 
   return (
     <div className="p-2 flex-1" >
+            <UserAddPostFromFeed />
             {posts.map((post: any) => (
                 <PostCard key={post.id} post={post}  />
             ))}

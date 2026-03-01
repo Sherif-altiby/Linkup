@@ -5,26 +5,56 @@ import GoogleSignUpButton from '@/app/__components/auth/GoogleSignUpButton'
 import { signup } from '@/app/actions/auth'
 import Link from 'next/link'
 import { useState } from 'react'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 const page = () => {
+  const router = useRouter()
   const [errors, setErrors] = useState<any>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(formData: FormData) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setLoading(true)
+
+    const formData = new FormData(e.currentTarget)
+
     try {
       const result = await signup(formData)
+
       if (!result.success) {
         toast.error(result.message || "Failed to sign up. Please check the form.")
         if (result.errors) setErrors(result.errors)
+        setLoading(false)
         return
       }
-      toast.success("Signup successful! Redirecting...")
-      setTimeout(() => { window.location.href = "/" }, 1500)
+
+      // Auto login after successful signup
+      const loginResult = await signIn("credentials", {
+        email: formData.get("email"),
+        password: formData.get("password"),
+        redirect: false,
+      })
+
+      setLoading(false)
+
+      if (loginResult?.error) {
+        toast.success("Account created! Please log in.")
+        router.push("/login")
+        return
+      }
+
+      toast.success("Account created! Redirecting...")
+      router.push("/")
+      router.refresh()
+
     } catch (err: any) {
       console.error(err)
       toast.error("Something went wrong. Please try again.")
+      setLoading(false)
     }
   }
 
@@ -43,7 +73,7 @@ const page = () => {
         </div>
 
         <div className="px-8 py-6">
-          <form action={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
 
             {/* Name + Email */}
             <div className="grid md:grid-cols-2 gap-4">
@@ -62,7 +92,6 @@ const page = () => {
                   Email
                 </label>
                 <div className="relative">
-                  
                   <input type="email" id="email" name="email" placeholder="your@email.com" className="inp-ctm" />
                 </div>
                 {errors?.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
@@ -75,7 +104,6 @@ const page = () => {
                 Phone
               </label>
               <div className="relative">
-                
                 <input type="tel" id="phone" name="phone" placeholder="+1 (555) 000-0000" className="inp-ctm" />
               </div>
               {errors?.phone && <p className="text-red-400 text-xs mt-1">{errors.phone}</p>}
@@ -88,7 +116,6 @@ const page = () => {
                   Password
                 </label>
                 <div className="relative">
-                  
                   <input
                     type={showPassword ? "text" : "password"}
                     id="password"
@@ -122,7 +149,6 @@ const page = () => {
                   Confirm
                 </label>
                 <div className="relative">
-                   
                   <input
                     type={showConfirm ? "text" : "password"}
                     id="confirm-password"
@@ -155,16 +181,17 @@ const page = () => {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full py-2.5 mt-2 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-sm font-semibold text-gray-950 tracking-wide uppercase transition-all duration-200 shadow-lg shadow-amber-500/20"
+              disabled={loading}
+              className="w-full py-2.5 mt-2 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-sm font-semibold text-gray-950 tracking-wide uppercase transition-all duration-200 shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Create Account
+              {loading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
 
           {/* Divider */}
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-gray-800" />
-                <span className="text-xs font-medium tracking-widest uppercase text-gray-600">or continue with</span>
+            <span className="text-xs font-medium tracking-widest uppercase text-gray-600">or continue with</span>
             <div className="flex-1 h-px bg-gray-800" />
           </div>
 

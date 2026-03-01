@@ -208,7 +208,7 @@ export default function CreatePost({
               className="px-5 py-2 rounded-xl text-sm font-semibold bg-amber-500 hover:bg-amber-400 text-gray-950 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-amber-500/20"
             >
               {loading
-                ? mode === "edit" ? "Saving..." : "Posting..."
+                ? mode === "create" ? "Saving..." : "Posting..."
                 : mode === "edit" ? "Save Changes" : "Post"}
             </button>
           </div>

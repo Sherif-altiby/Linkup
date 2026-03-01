@@ -6,7 +6,6 @@ import UserInfo from "@/app/__components/user/UserInfo";
 import PostSkeleton from "@/skeletons/PostSkeleton";
 import { usePostsStore } from "@/store/postStore";
 import { useUserStore } from "@/store/userStore";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const UserPage = () => {

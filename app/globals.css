@@ -59,13 +59,13 @@ input {
 .inp-ctm {
   @apply 
        w-full 
-     bg-gray-800 
+       bg-gray-800 
        border  border-gray-700 rounded-xl 
        pr-3 py-2.5 
        text-sm text-gray-200
-     placeholder-gray-600 
+       placeholder-gray-600 
        outline-none
-     focus:border-amber-500/60 
+       focus:border-amber-500/60 
        focus:ring-2 focus:ring-amber-500/10 
        transition-all duration-200
 }
