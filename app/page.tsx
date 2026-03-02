@@ -9,7 +9,7 @@ export default async function Home() {
      <div >
         <main>
                 
-                <div className="flex gap-4 mt-5 " >
+                <div className="flex gap-4 py-5 container" >
                     <LeftSideBar />
                       <Feed/>
                     <RightSideBar />

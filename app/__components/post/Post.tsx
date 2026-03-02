@@ -74,7 +74,7 @@ export default function PostCard({
                           alt="avatar"
                           width={44}
                           height={44}
-                          className="rounded-full object-cover border-2 border-gray-700"
+                          className="rounded-full w-full h-full object-cover border-2 border-gray-700"
                        />
              </Link>
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-gray-900" />

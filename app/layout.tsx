@@ -28,7 +28,7 @@ export default async function RootLayout({ children, }: Readonly<{ children: Rea
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-primary-color text-text-color`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-800 text-text-color`}
       >
         <UserInitializer user={user} />
           <Navbar />

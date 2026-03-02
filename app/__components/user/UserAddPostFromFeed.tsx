@@ -15,7 +15,7 @@ const UserAddPostFromFeed = () => {
     const [show, setShow] = useState(false)
 
   return (
-    <div className="px-3 py-4 mb-5 bg-gray-900 border border-gray-800 rounded-md flex gap-3" >
+    <div className="px-3 py-4 mb-5 bg-gray-900 border border-gray-800 rounded-xl flex gap-3" >
 
           {show && <CreatePost mode="create"  onClose={() => setShow(false)} show onPostCreated={() => fetchUserPosts(user?.id || "")}/>}
 
@@ -25,10 +25,10 @@ const UserAddPostFromFeed = () => {
             >
                 <Image
                     src={user?.image || "/default-avatar.png"}
-                    alt="user image"
-                    width={44} 
-                    height={44}
-                    className="rounded-full object-contain"
+                    width={36}
+                    height={36}
+                    alt="User Avatar"
+                    className="w-full h-full object-cover rounded-full"
                 />
             </Link>
 

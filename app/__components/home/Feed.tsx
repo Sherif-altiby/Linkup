@@ -39,7 +39,7 @@ const Feed = async () => {
   });
 
   return (
-    <div className="p-2 flex-1" >
+    <div className=" flex-1" >
             <UserAddPostFromFeed />
             {posts.map((post: any) => (
                 <PostCard key={post.id} post={post}  />

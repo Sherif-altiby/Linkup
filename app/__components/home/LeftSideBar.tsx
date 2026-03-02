@@ -21,7 +21,7 @@ const sponsored = [
 
 const LeftSideBar = () => {
   return (
-    <section className="hidden w-1/4 bg-gray-900 border-r border-gray-800 lg:flex flex-col">
+    <section className="hidden w-1/4 bg-gray-900 border-r rounded-xl border-gray-800 lg:flex flex-col">
 
       {/* Header */}
       <div className="px-5 pt-6 pb-4 border-b border-gray-800">
