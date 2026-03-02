@@ -39,7 +39,6 @@ export default function CommentsPage() {
                   const data = await commentRes.json();
                   setComments(data)
 
-                  console.log("post: =>>", post)
              })
         } catch (error) {
             toast.error("Something went wrong")

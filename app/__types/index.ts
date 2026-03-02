@@ -22,6 +22,8 @@ export type PostComment = Comment & {
    }
 }
 
+
+
 export interface CreatePostProps {
   onClose: () => void
   show: boolean

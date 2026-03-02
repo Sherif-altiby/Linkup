@@ -27,8 +27,6 @@ export default function PostCard({
   const [likeCount, setLikeCount] = useState(post?._count?.likes || 0);
   const [comentCount, setCommentCont] = useState(post?._count?.comments || 0);
 
-  console.log("POST",  post)
-
   const handlePostDelete = async (postId: string) => {
     try {
       const res: any = await fetch(`/api/posts/${postId}`, { method: "DELETE" });

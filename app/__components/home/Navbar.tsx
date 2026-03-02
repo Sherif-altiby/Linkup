@@ -64,7 +64,7 @@ const Navbar = async () => {
 
         {/* Avatar */}
         <Link
-          href={`/users/${user?.id}`}
+          href={`/profile/${user?.id}`}
           className="w-9 h-9 rounded-full overflow-hidden border-2 border-gray-700 hover:border-amber-500 transition-colors duration-200 flex-shrink-0"
           title="Profile"
         >

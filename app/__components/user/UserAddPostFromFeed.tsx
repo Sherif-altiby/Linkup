@@ -20,7 +20,7 @@ const UserAddPostFromFeed = () => {
           {show && <CreatePost mode="create"  onClose={() => setShow(false)} show onPostCreated={() => fetchUserPosts(user?.id || "")}/>}
 
             <Link 
-                 href={`users/${user?.id}`} 
+                 href={`profile/${user?.id}`} 
                  className="w-11 h-11 rounded-full border-2 border-gray-800" 
             >
                 <Image
