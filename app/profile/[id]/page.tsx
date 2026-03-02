@@ -39,7 +39,7 @@ const UserPage = () => {
         initialContent={editPost?.content}
         initialImage={editPost?.image}
       />
-      <div className="flex flex-col md:flex-row gap-10">
+      <div className="flex flex-col md:flex-row gap-4">
         <UserInfo />
 
         <div className="md:w-1/2">

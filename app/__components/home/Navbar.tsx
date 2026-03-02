@@ -1,10 +1,11 @@
 import { getCurrentUser } from "@/lib/auth/currentUser";
-import Image from "next/image";
 import Link from "next/link";
 import { CiSearch } from "react-icons/ci";
 import { IoMdNotifications } from "react-icons/io";
 import { IoChatbubble } from "react-icons/io5";
 import { IoHomeSharp } from "react-icons/io5";
+import AvatarLik from "../nav/NavLink";
+import Search from "../nav/Search";
 
 const Navbar = async () => {
   const user = await getCurrentUser();
@@ -21,16 +22,7 @@ const Navbar = async () => {
           LinkUp
         </Link>
 
-        <div className="relative hidden sm:block">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
-            <CiSearch className="text-lg" />
-          </span>
-          <input
-            type="text"
-            placeholder="Search LinkUp..."
-            className="bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-4 py-2 w-52 text-sm text-gray-300 placeholder-gray-600 outline-none focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/10 transition-all duration-200"
-          />
-        </div>
+        <Search />
       </div>
 
       {/* Right — Icons + Avatar */}
@@ -63,19 +55,7 @@ const Navbar = async () => {
         <div className="w-px h-6 bg-gray-700 mx-2" />
 
         {/* Avatar */}
-        <Link
-          href={`/profile/${user?.id}`}
-          className="w-9 h-9 rounded-full overflow-hidden border-2 border-gray-700 hover:border-amber-500 transition-colors duration-200 flex-shrink-0"
-          title="Profile"
-        >
-          <Image
-            src={user?.image || "/default-avatar.png"}
-            width={36}
-            height={36}
-            alt="User Avatar"
-            className="w-full h-full object-cover"
-          />
-        </Link>
+        <AvatarLik href={`/profile/${user?.id}`} image={user?.image || ""} />
       </div>
     </nav>
   );

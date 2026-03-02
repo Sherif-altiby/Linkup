@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useState } from "react"
 import CreatePost from "../post/CreatePost"
 import { usePostsStore } from "@/store/postStore"
+import AvatarLik from "../nav/NavLink"
 
 
 const UserAddPostFromFeed = () => {
@@ -18,19 +19,8 @@ const UserAddPostFromFeed = () => {
     <div className="px-3 py-4 mb-5 bg-gray-900 border border-gray-800 rounded-xl flex gap-3" >
 
           {show && <CreatePost mode="create"  onClose={() => setShow(false)} show onPostCreated={() => fetchUserPosts(user?.id || "")}/>}
-
-            <Link 
-                 href={`profile/${user?.id}`} 
-                 className="w-11 h-11 rounded-full border-2 border-gray-800" 
-            >
-                <Image
-                    src={user?.image || "/default-avatar.png"}
-                    width={36}
-                    height={36}
-                    alt="User Avatar"
-                    className="w-full h-full object-cover rounded-full"
-                />
-            </Link>
+            
+            <AvatarLik href={`/profile/${user?.id}`} image={user?.image || ""} />
 
             <div className="flex-1 rounded-full border border-(--icon-bg-color) overflow-hidden" >
                   <input 

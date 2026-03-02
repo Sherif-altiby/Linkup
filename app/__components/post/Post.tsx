@@ -11,6 +11,7 @@ import { FaCommentDots } from "react-icons/fa";
 import { BiRepost } from "react-icons/bi";
 import AddComment from "./AddComment";
 import Link from "next/link";
+import AvatarLik from "../nav/NavLink";
 
 export default function PostCard({
   post,
@@ -67,18 +68,7 @@ export default function PostCard({
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <Link href={`/users/${post.authorId}`}>
-                        <Image
-                          src={post.author.image || "/default-avatar.png"}
-                          alt="avatar"
-                          width={44}
-                          height={44}
-                          className="rounded-full w-full h-full object-cover border-2 border-gray-700"
-                       />
-             </Link>
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-gray-900" />
-          </div>
+             <AvatarLik href={`/users/${post.authorId}`} image={post.author.image || "default-avatar.png"} />         
           <div>
             <h3 className="font-semibold text-gray-100 text-sm leading-tight">
               {post.author.name}
