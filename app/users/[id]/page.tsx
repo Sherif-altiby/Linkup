@@ -9,7 +9,6 @@ import { PostWithAuthor } from "@/app/__types";
 import PostCard from "@/app/__components/post/Post";
 import PostSkeleton from "@/skeletons/PostSkeleton";
 
-
 const IconMessage = () => (
   <svg
     className="w-4 h-4"
@@ -58,22 +57,20 @@ const IconUserCheck = () => (
   </svg>
 );
 
-
 export default function UserViewPage() {
-
   const [followed, setFollowed] = useState(false);
-  const [user, setUser] = useState<User>()
+  const [user, setUser] = useState<User>();
 
-  const {fetchUserPosts, posts, loading} = usePostsStore()
+  const { fetchUserPosts, posts, loading } = usePostsStore();
   const [isPending, startTransition] = useTransition();
-  
+
   const { id } = useParams<{ id: string }>();
 
   const getUserInfo = async (userId: string) => {
     const res = await fetch(`/api/users/${userId}`);
     const data = await res.json();
 
-    setUser(data)
+    setUser(data);
   };
 
   const details = [
@@ -81,7 +78,13 @@ export default function UserViewPage() {
       label: "Email",
       value: user?.email,
       icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <rect x="2" y="4" width="20" height="16" rx="2" />
           <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
         </svg>
@@ -91,7 +94,13 @@ export default function UserViewPage() {
       label: "Location",
       value: user?.location,
       icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
           <circle cx="12" cy="10" r="3" />
         </svg>
@@ -101,7 +110,13 @@ export default function UserViewPage() {
       label: "Phone",
       value: user?.phone,
       icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12 19.79 19.79 0 0 1 1.93 3.27 2 2 0 0 1 3.93 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
         </svg>
       ),
@@ -110,7 +125,13 @@ export default function UserViewPage() {
       label: "Birth Date",
       value: user?.birthDate,
       icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
           <line x1="16" y1="2" x2="16" y2="6" />
           <line x1="8" y1="2" x2="8" y2="6" />
@@ -118,12 +139,49 @@ export default function UserViewPage() {
         </svg>
       ),
     },
-  ]
+  ];
 
+  const followUser = async (id: string) => {
+    startTransition(async () => {
+      const res = await fetch("/api/follow", {
+        method: "POST",
+        body: JSON.stringify({ followingId: id }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await res.json();
+      console.log(user)
+      if (res.ok) {
+        console.log("Followed successfully!", data);
+        setFollowed(true)
+      } else {
+        console.error("Error:", data.error);
+      }
+    });
+  };
+
+  const unFollowUser = async (id: string) => {
+    startTransition(async () => {
+      const res = await fetch("/api/follow", {
+        method: "delete",
+        body: JSON.stringify({ followingId: id }),
+        headers: { "Content-Type": "application/json" },
+  });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        console.log("Followed successfully!", data);
+        setFollowed(true)
+      } else {
+        console.error("Error:", data.error);
+      }
+    });
+  };
 
   useEffect(() => {
-      getUserInfo(id);
-      fetchUserPosts(id);
+    getUserInfo(id);
+    fetchUserPosts(id);
   }, [id]);
 
   return (
@@ -155,7 +213,7 @@ export default function UserViewPage() {
                           src={user?.image}
                           alt={user.name || "user Imahe"}
                           className="w-full h-full object-cover"
-                          width= {50}
+                          width={50}
                           height={50}
                         />
                       ) : (
@@ -170,9 +228,7 @@ export default function UserViewPage() {
                   <h2 className="text-white font-bold text-xl leading-tight">
                     {user?.name}
                   </h2>
-                  <p className="text-gray-500 text-sm mt-0.5">
-                    @{user?.name}
-                  </p>
+                  <p className="text-gray-500 text-sm mt-0.5">@{user?.name}</p>
 
                   {/* Bio */}
                   {user?.bio && (
@@ -181,11 +237,10 @@ export default function UserViewPage() {
                     </p>
                   )}
 
-
                   {/* Action buttons */}
                   <div className="flex gap-2.5 mt-4">
                     <button
-                      onClick={() => setFollowed(!followed)}
+                      onClick={() => followUser(user?.id || "")}
                       className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all ${
                         followed
                           ? "bg-gray-800 border border-gray-700 text-gray-300 hover:border-red-500/50 hover:text-red-400"
@@ -205,24 +260,27 @@ export default function UserViewPage() {
 
               {/* Details card */}
               <div className="px-6 py-5 space-y-3">
-            {details.map((item) =>
-              item.value ? (
-                <div
-                  key={item.label}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-gray-800/60 border border-gray-800 hover:border-amber-500/30 transition-colors duration-200"
-                >
-                  <span className="text-amber-500 shrink-0">{item.icon}</span>
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium tracking-widest uppercase text-gray-500 leading-none mb-0.5">
-                      {item.label}
-                    </p>
-                    <p className="text-sm text-gray-200 truncate">{item.value}</p>
-                  </div>
-                </div>
-              ) : null
-            )}
-          </div>
-
+                {details.map((item) =>
+                  item.value ? (
+                    <div
+                      key={item.label}
+                      className="flex items-center gap-3 p-3 rounded-xl bg-gray-800/60 border border-gray-800 hover:border-amber-500/30 transition-colors duration-200"
+                    >
+                      <span className="text-amber-500 shrink-0">
+                        {item.icon}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-xs font-medium tracking-widest uppercase text-gray-500 leading-none mb-0.5">
+                          {item.label}
+                        </p>
+                        <p className="text-sm text-gray-200 truncate">
+                          {item.value}
+                        </p>
+                      </div>
+                    </div>
+                  ) : null,
+                )}
+              </div>
             </div>
           </div>
 
@@ -235,8 +293,13 @@ export default function UserViewPage() {
               </span>
             </div>
 
-             {loading ? <PostSkeleton /> : posts.map((post: PostWithAuthor) => (<PostCard key={post.id} post={post}  />))}
-
+            {loading ? (
+              <PostSkeleton />
+            ) : (
+              posts.map((post: PostWithAuthor) => (
+                <PostCard key={post.id} post={post} />
+              ))
+            )}
           </div>
         </div>
       </div>
