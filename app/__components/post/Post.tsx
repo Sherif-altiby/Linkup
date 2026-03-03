@@ -53,7 +53,7 @@ export default function PostCard({
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-gray-900 border border-gray-800 rounded-2xl shadow-xl mb-5 overflow-hidden relative">
+    <div className="w-full  mx-auto bg-gray-900 border border-gray-800 rounded-2xl shadow-xl mb-5 overflow-hidden relative">
       <PostDropdownMenu
         id={post.author.id}
         show={show}

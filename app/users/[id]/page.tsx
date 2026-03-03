@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useParams } from "next/navigation";
 import { User } from "@/app/generated/prisma/client";
 import Image from "next/image";
 import { usePostsStore } from "@/store/postStore";
 import { PostWithAuthor } from "@/app/__types";
 import PostCard from "@/app/__components/post/Post";
+import PostSkeleton from "@/skeletons/PostSkeleton";
 
 
 const IconMessage = () => (
@@ -63,8 +64,9 @@ export default function UserViewPage() {
   const [followed, setFollowed] = useState(false);
   const [user, setUser] = useState<User>()
 
-  const {fetchUserPosts, posts} = usePostsStore()
-
+  const {fetchUserPosts, posts, loading} = usePostsStore()
+  const [isPending, startTransition] = useTransition();
+  
   const { id } = useParams<{ id: string }>();
 
   const getUserInfo = async (userId: string) => {
@@ -233,7 +235,7 @@ export default function UserViewPage() {
               </span>
             </div>
 
-             {posts.map((post: PostWithAuthor) => (<PostCard key={post.id} post={post}  />))}
+             {loading ? <PostSkeleton /> : posts.map((post: PostWithAuthor) => (<PostCard key={post.id} post={post}  />))}
 
           </div>
         </div>
