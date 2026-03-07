@@ -23,6 +23,7 @@ const UserPage = () => {
     if (!user?.id) return;
 
     fetchUserPosts(user.id);
+    console.log(posts)
   }, [user?.id]);
 
   return (
