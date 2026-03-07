@@ -1,4 +1,4 @@
-import { PrismaClient } from "../app/generated/prisma/client"; // relative path, not @/
+import { PrismaClient } from "../app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { hash } from "bcryptjs";
 import * as dotenv from "dotenv";
@@ -12,6 +12,7 @@ async function main() {
   console.log("🌱 Seeding database...");
 
   // ─── Clean existing data (order matters for FK constraints) ───────────────
+  await prisma.message.deleteMany();
   await prisma.follow.deleteMany();
   await prisma.like.deleteMany();
   await prisma.comment.deleteMany();
@@ -189,38 +190,31 @@ async function main() {
   // ─── Likes ────────────────────────────────────────────────────────────────
   await prisma.like.createMany({
     data: [
-      // post1
       { postId: post1.id, userId: bob.id   },
       { postId: post1.id, userId: carol.id },
       { postId: post1.id, userId: dan.id   },
       { postId: post1.id, userId: eva.id   },
 
-      // post2
       { postId: post2.id, userId: alice.id },
       { postId: post2.id, userId: carol.id },
       { postId: post2.id, userId: eva.id   },
 
-      // post3
       { postId: post3.id, userId: alice.id },
       { postId: post3.id, userId: bob.id   },
       { postId: post3.id, userId: dan.id   },
       { postId: post3.id, userId: eva.id   },
 
-      // post4
       { postId: post4.id, userId: alice.id },
       { postId: post4.id, userId: bob.id   },
       { postId: post4.id, userId: carol.id },
 
-      // post5
       { postId: post5.id, userId: alice.id },
       { postId: post5.id, userId: bob.id   },
 
-      // post6
       { postId: post6.id, userId: carol.id },
       { postId: post6.id, userId: dan.id   },
       { postId: post6.id, userId: eva.id   },
 
-      // post7
       { postId: post7.id, userId: alice.id },
       { postId: post7.id, userId: carol.id },
       { postId: post7.id, userId: eva.id   },
@@ -230,11 +224,6 @@ async function main() {
   console.log("✅ Likes created");
 
   // ─── Follows ──────────────────────────────────────────────────────────────
-  // alice  ← followed by: bob, carol, dan, eva
-  // bob    ← followed by: alice, carol, eva
-  // carol  ← followed by: alice, bob, dan
-  // dan    ← followed by: bob, carol, eva
-  // eva    ← followed by: alice, carol, dan
   await prisma.follow.createMany({
     data: [
       { followerId: bob.id,   followingId: alice.id },
@@ -261,6 +250,69 @@ async function main() {
   });
 
   console.log("✅ Follows created");
+
+  // ─── Messages ─────────────────────────────────────────────────────────────
+  // Alice ↔ Bob
+  await prisma.message.createMany({
+    data: [
+      { senderId: alice.id, receiverId: bob.id, content: "Hey Bob! Did you see the new Next.js release?", read: true },
+      { senderId: bob.id, receiverId: alice.id, content: "Yes! Server Actions are insane 🔥 Been playing with them all morning.", read: true },
+      { senderId: alice.id, receiverId: bob.id, content: "Right?! No more boilerplate API routes. It feels like magic.", read: true },
+      { senderId: bob.id, receiverId: alice.id, content: "Exactly. Combined with Prisma it's SO clean.", read: true },
+      { senderId: alice.id, receiverId: bob.id, content: "Just shipped a brand-new feature using it 🚀", read: false },
+    ],
+  });
+
+  // Alice ↔ Carol
+  await prisma.message.createMany({
+    data: [
+      { senderId: carol.id, receiverId: alice.id, content: "Alice! Loved your post about Server Actions 🙌", read: true },
+      { senderId: alice.id, receiverId: carol.id, content: "Thanks Carol! Working on a full writeup soon.", read: true },
+      { senderId: carol.id, receiverId: alice.id, content: "Can't wait to read it! Also, check out my new onboarding redesign.", read: true },
+      { senderId: alice.id, receiverId: carol.id, content: "34% drop-off reduction?? That's insane! How did you do it?", read: false },
+    ],
+  });
+
+  // Bob ↔ Dan
+  await prisma.message.createMany({
+    data: [
+      { senderId: bob.id, receiverId: dan.id, content: "Dan, how's the Go migration going?", read: true },
+      { senderId: dan.id, receiverId: bob.id, content: "Done! Cold start went from 800ms to 12ms ⚡", read: true },
+      { senderId: bob.id, receiverId: dan.id, content: "That's wild. What was the bottleneck in Node?", read: true },
+      { senderId: dan.id, receiverId: bob.id, content: "Mostly startup time and memory overhead. Go is just built different.", read: true },
+      { senderId: bob.id, receiverId: dan.id, content: "Might have to try it for our auth service.", read: false },
+    ],
+  });
+
+  // Carol ↔ Eva
+  await prisma.message.createMany({
+    data: [
+      { senderId: eva.id, receiverId: carol.id, content: "Carol! Q3 roadmap is locked. Design reviews start next week 🗺️", read: true },
+      { senderId: carol.id, receiverId: eva.id, content: "Already on it! Wireframes are half done.", read: true },
+      { senderId: eva.id, receiverId: carol.id, content: "You're a legend 🙌", read: true },
+      { senderId: carol.id, receiverId: eva.id, content: "Just doing my job 😄 Send me the specs when ready.", read: false },
+    ],
+  });
+
+  // Alice ↔ Eva
+  await prisma.message.createMany({
+    data: [
+      { senderId: eva.id, receiverId: alice.id, content: "Hey Alice, are you joining the Q3 planning call?", read: true },
+      { senderId: alice.id, receiverId: eva.id, content: "Yes! Just blocked my calendar 📅", read: true },
+      { senderId: eva.id, receiverId: alice.id, content: "Great. I'll share the doc beforehand.", read: false },
+    ],
+  });
+
+  // Dan ↔ Eva
+  await prisma.message.createMany({
+    data: [
+      { senderId: dan.id, receiverId: eva.id, content: "Eva, the infra for Q3 features is ready to go.", read: true },
+      { senderId: eva.id, receiverId: dan.id, content: "Perfect timing! We kick off next Monday.", read: true },
+      { senderId: dan.id, receiverId: eva.id, content: "I'll make sure the staging env is up by Friday.", read: false },
+    ],
+  });
+
+  console.log("✅ Messages created");
   console.log("\n🎉 Seeding complete!");
   console.log("\nTest accounts (password: password123)");
   console.log("  alice@example.com");
