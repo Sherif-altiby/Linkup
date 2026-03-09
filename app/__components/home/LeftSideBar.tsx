@@ -11,17 +11,11 @@ const sponsored = [
     url: "www.premiumgear.com",
     img: "https://images.pexels.com/photos/7726306/pexels-photo-7726306.jpeg",
   },
-  {
-    id: 3,
-    title: "Top Brand",
-    url: "www.topbrand.com",
-    img: "https://images.pexels.com/photos/7726306/pexels-photo-7726306.jpeg",
-  },
 ]
 
 const LeftSideBar = () => {
   return (
-    <section className="hidden w-1/4 bg-gray-900 border-r rounded-xl border-gray-800 lg:flex flex-col">
+    <section className="hidden w-1/4 bg-gray-900 border-r rounded-xl border-gray-800 lg:flex flex-col h-[calc(100vh-100px)] sticky top-16.25">
 
       {/* Header */}
       <div className="px-5 pt-6 pb-4 border-b border-gray-800">

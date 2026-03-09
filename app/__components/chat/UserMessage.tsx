@@ -87,7 +87,7 @@ const UserMessage = ({ receiverId }: Props) => {
       {messages.map((msg) => {
         const isMe = msg.senderId === user?.id;
         return (
-          <div key={msg.id} className={`flex ${isMe ? "flex-row-reverse" : "flex-row"} gap-2`}>
+          <div key={msg.id} className={`flex ${isMe ? "flex-row-reverse" : "flex-row"} gap-2  `}>
             <AvatarLik href="" image={msg.sender.image ?? "/default-avatar.png"} />
             <div className="max-w-[65%]">
               <div className={`px-4 py-2.5 text-sm leading-relaxed rounded-md ${

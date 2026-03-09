@@ -14,6 +14,8 @@ import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import CommentSkeleton from "@/skeletons/CommentSkeleton";
 import PostSkeleton from "@/skeletons/PostSkeleton";
+import { useUserStore } from "@/store/userStore";
+import AvatarLik from "@/app/__components/nav/NavLink";
 
 
 export default function CommentsPage() {
@@ -22,6 +24,8 @@ export default function CommentsPage() {
     const [comments, setComments] = useState<PostComment[]>([]);
     const [post, setPot] = useState<PostWithAuthor>();
     const [isPending, startTransition] = useTransition();
+
+    const user = useUserStore(state => state.user)
 
     const fetchComments = async () => {
         
@@ -55,15 +59,6 @@ export default function CommentsPage() {
   return (
     <div className="min-h-screen bg-gray-950">
       <div className="max-w-2xl mx-auto px-4 py-6">
-
-        {/* Back */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-amber-500 transition-colors duration-200 mb-6"
-        >
-          <IoArrowBack className="text-base" />
-          Back to feed
-        </Link>
 
         {/* Original Post */}
         {isPending ? <PostSkeleton />  : (
@@ -117,17 +112,6 @@ export default function CommentsPage() {
             <span className="text-xs text-gray-500">{post?._count?.comments} Comments</span>
           </div>
 
-          {/* Post Actions */}
-          <div className="flex items-center px-3 py-1">
-            <button className="flex items-center gap-2 flex-1 justify-center py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-gray-800 hover:text-amber-500 transition-all duration-200">
-              <AiFillLike className="text-base" />
-              <span>Like</span>
-            </button>
-            <button className="flex items-center gap-2 flex-1 justify-center py-2.5 rounded-xl text-sm font-medium text-amber-500 bg-gray-800 transition-all duration-200">
-              <FaCommentDots className="text-base" />
-              <span>Comment</span>
-            </button>
-          </div>
         </div>
         )}
 
@@ -181,7 +165,7 @@ export default function CommentsPage() {
           <div className="px-5 pb-5 pt-2 border-t border-gray-800">
             <div className="flex gap-3 items-center">
               <div className="w-8 h-8 rounded-full bg-gray-800 border-2 border-gray-700 shrink-0 flex items-center justify-center text-amber-500 text-sm font-light select-none">
-                Y
+                 <AvatarLik href={`/profile`} image={user?.image || "default-avatar.png"} />
               </div>
               <div className="flex-1 relative">
                 <input

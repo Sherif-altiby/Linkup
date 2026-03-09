@@ -4,7 +4,7 @@ import Image from "next/image";
 import { PostWithAuthor } from "../../__types";
 import { timeAgo } from "@/lib/timeCalc";
 import PostDropdownMenu from "./PostDropdownMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiFillLike } from "react-icons/ai";
 import { FaCommentDots } from "react-icons/fa";
@@ -12,6 +12,7 @@ import { BiRepost } from "react-icons/bi";
 import AddComment from "./AddComment";
 import Link from "next/link";
 import AvatarLik from "../nav/NavLink";
+import { useUserStore } from "@/store/userStore";
 
 export default function PostCard({
   post,
@@ -27,6 +28,14 @@ export default function PostCard({
 
   const [likeCount, setLikeCount] = useState(post?._count?.likes || 0);
   const [comentCount, setCommentCont] = useState(post?._count?.comments || 0);
+
+  const user = useUserStore(state => state.user)
+
+  const [isCurrentUserLikedPost, setIsCurrentUserLikedpost]  = useState(false)
+
+  useEffect(() => {
+      setIsCurrentUserLikedpost(post.likes.some((like) => like.userId === user?.id))
+  }, [user])
 
   const handlePostDelete = async (postId: string) => {
     try {
@@ -127,9 +136,12 @@ export default function PostCard({
       {/* Actions */}
       <div className="flex items-center px-3 py-1">
         <button
-          onClick={handleLike}
+          onClick={() => {
+            handleLike()
+            setIsCurrentUserLikedpost(preve => !preve)
+          }}
           className={`flex items-center gap-2 flex-1 justify-center py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-gray-800 ${
-            post.isLikedByCurrentUser ? "text-amber-500" : "text-gray-500 hover:text-amber-500"
+            isCurrentUserLikedPost ? "text-amber-500" : "text-gray-500 hover:text-amber-500"
           }`}
         >
           <AiFillLike className="text-base" />

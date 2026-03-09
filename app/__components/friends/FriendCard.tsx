@@ -1,5 +1,6 @@
 import { User } from "@/app/generated/prisma/client"
 import AvatarLik from "../nav/NavLink"
+import Link from "next/link"
 
 const FriendCard = ({friend}: {friend: User}) => {
   return (
@@ -19,11 +20,11 @@ const FriendCard = ({friend}: {friend: User}) => {
             </div>
 
             {/* Message icon */}
-            <span className="text-gray-700 group-hover:text-amber-500 opacity-0 group-hover:opacity-100 transition-all duration-200 flex-shrink-0">
+            <Link href={`/chat/${friend.id}`} className="text-gray-700 group-hover:text-amber-500 opacity-0 group-hover:opacity-100 transition-all duration-200 flex-shrink-0">
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
               </svg>
-            </span>
+            </Link>
           </div>
   )
 }

@@ -69,3 +69,23 @@ input {
        focus:ring-2 focus:ring-amber-500/10 
        transition-all duration-200
 }
+
+
+
+/* Beautiful custom scrollbar */
+.custom-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #374151; /* gray-700 */
+  border-radius: 999px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #6366f1; /* indigo-500 */
+}

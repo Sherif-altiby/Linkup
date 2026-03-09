@@ -20,7 +20,7 @@ const RightSideBar = () => {
   }, []);
 
   return (
-    <div className="hidden w-1/4 h-screen sticky rounded-xl top-0 bg-gray-900 border-l border-gray-800 lg:flex flex-col">
+    <div className="hidden w-1/4 h-[calc(100vh-100px)] sticky rounded-xl top-16.25 bg-gray-900 border-l border-gray-800 lg:flex flex-col">
 
       {/* Header */}
       <div className="px-5 pt-6 pb-4 border-b border-gray-800">

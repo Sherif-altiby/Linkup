@@ -8,6 +8,7 @@ export type PostWithAuthor = Post & {
     image: string | null
   }
   isLikedByCurrentUser: boolean;
+  likes: {userId: string}[]
   _count: {
     likes: number;
     comments: number;
@@ -21,7 +22,6 @@ export type PostComment = Comment & {
      image: string
    }
 }
-
 
 
 export interface CreatePostProps {

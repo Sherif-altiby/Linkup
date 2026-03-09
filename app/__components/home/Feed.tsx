@@ -10,33 +10,36 @@ const Feed = async () => {
   const session = await getServerSession(authOptions);
   const currentUserId = session?.user?.id;
 
-  const posts = await prisma.post.findMany({
-    where: {
-      authorId: {
-        not: currentUserId, 
+ const posts = await prisma.post.findMany({
+  where: {
+    authorId: {
+      not: currentUserId,
+    },
+  },
+  include: {
+    author: {
+      select: {
+        id: true,
+        name: true,
+        image: true,
       },
     },
-    include: {
-      author: {
-        select: {
-          id: true,
-          name: true, 
-          image: true,
-        },
+    likes: {
+      select: {
+        userId: true,
       },
-
-       _count: {
-          select: {
-            likes: true,
-            comments: true,
-          },
-        },
-      
     },
-    orderBy: {
-      createdAt: "desc",
+    _count: {
+      select: {
+        likes: true,
+        comments: true,
+      },
     },
-  });
+  },
+  orderBy: {
+    createdAt: "desc",
+  },
+});
 
   return (
     <div className=" flex-1" >
