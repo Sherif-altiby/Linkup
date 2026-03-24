@@ -1,54 +1,74 @@
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import PostCard from "../post/Post";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import UserAddPostFromFeed from "../user/UserAddPostFromFeed";
-
+import FeedPosts from "./FeedPosts";
 
 const Feed = async () => {
-
   const session = await getServerSession(authOptions);
   const currentUserId = session?.user?.id;
 
- const posts = await prisma.post.findMany({
-  where: {
-    authorId: {
-      not: currentUserId,
-    },
-  },
-  include: {
-    author: {
-      select: {
-        id: true,
-        name: true,
-        image: true,
-      },
-    },
-    likes: {
-      select: {
-        userId: true,
-      },
-    },
-    _count: {
-      select: {
-        likes: true,
-        comments: true,
-      },
-    },
-  },
-  orderBy: {
-    createdAt: "desc",
-  },
-});
+  console.log("=== INITIAL FEED LOAD ===");
+  console.log("Current user ID:", currentUserId);
 
-  return (
-    <div className=" flex-1" >
-            <UserAddPostFromFeed />
-            {posts.map((post: any) => (
-                <PostCard key={post.id} post={post}  />
-            ))}
-    </div>
-  )
-}
+  const limit = 10;
 
-export default Feed
+  // First, let's check total posts
+  const totalPosts = await prisma.post.count({
+    where: {
+      authorId: {
+        not: currentUserId,
+      },
+    },
+  });
+
+  console.log("Total posts excluding current user:", totalPosts);
+
+  const posts = await prisma.post.findMany({
+    take: limit + 1,
+    where: {
+      authorId: {
+        not: currentUserId,
+      },
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+      likes: {
+        select: {
+          userId: true,
+        },
+      },
+      _count: {
+        select: {
+          likes: true,
+          comments: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  console.log("Initial posts fetched:", posts.length);
+
+  let nextCursor: string | undefined = undefined;
+  if (posts.length > limit) {
+    const nextItem = posts.pop();
+    nextCursor = nextItem!.id;
+    console.log("Initial next cursor:", nextCursor);
+  } else {
+    console.log("No next cursor - loaded all available posts");
+  }
+
+  console.log("Passing to client:", posts.length, "posts with cursor:", nextCursor);
+
+  return <FeedPosts initialPosts={posts} initialCursor={nextCursor} />;
+};
+
+export default Feed;
