@@ -152,13 +152,7 @@ const FeedPosts = ({ initialPosts, initialCursor }: FeedProps) => {
         </div>
       )}
       
-      {!hasMore && !loading && posts.length > 0 && (
-        <div className="text-center p-8 bg-gradient-to-b from-gray-50 to-white">
-          <p className="text-2xl mb-2">🎉</p>
-          <p className="text-gray-600 font-medium">You've seen all posts!</p>
-          <p className="text-gray-400 text-sm mt-1">Total: {posts.length} posts</p>
-        </div>
-      )}
+      
 
       {!loading && !error && posts.length === 0 && (
         <div className="text-center p-12">

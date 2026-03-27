@@ -69,8 +69,10 @@ export default function UserViewPage() {
   const getUserInfo = async (userId: string) => {
     const res = await fetch(`/api/users/${userId}`);
     const data = await res.json();
+    console.log("USER: ", data)
 
     setUser(data);
+    setFollowed(data.isFollowing)
   };
 
   const details = [
@@ -141,43 +143,16 @@ export default function UserViewPage() {
     },
   ];
 
-  const followUser = async (id: string) => {
-    startTransition(async () => {
-      const res = await fetch("/api/follow", {
-        method: "POST",
-        body: JSON.stringify({ followingId: id }),
-        headers: { "Content-Type": "application/json" },
-      });
-
-      const data = await res.json();
-      console.log(user)
-      if (res.ok) {
-        console.log("Followed successfully!", data);
-        setFollowed(true)
-      } else {
-        console.error("Error:", data.error);
-      }
-    });
-  };
-
-  const unFollowUser = async (id: string) => {
-    startTransition(async () => {
-      const res = await fetch("/api/follow", {
-        method: "delete",
-        body: JSON.stringify({ followingId: id }),
-        headers: { "Content-Type": "application/json" },
+  const followUser = async (userId : string) => {
+  const res = await fetch('/api/follow', {
+    method: 'POST',
+    body: JSON.stringify({ targetUserId: userId }),
+    headers: { 'Content-Type': 'application/json' }
   });
+  const data = await res.json();
+  setFollowed(data.isFollowing)
+};
 
-      const data = await res.json();
-
-      if (res.ok) {
-        console.log("Followed successfully!", data);
-        setFollowed(true)
-      } else {
-        console.error("Error:", data.error);
-      }
-    });
-  };
 
   useEffect(() => {
     getUserInfo(id);

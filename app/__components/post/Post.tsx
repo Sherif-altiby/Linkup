@@ -34,7 +34,7 @@ export default function PostCard({
   const [isCurrentUserLikedPost, setIsCurrentUserLikedpost]  = useState(false)
 
   useEffect(() => {
-      setIsCurrentUserLikedpost(post.likes.some((like) => like.userId === user?.id))
+      setIsCurrentUserLikedpost(post.likes?.some((like) => like.userId === user?.id))
   }, [user])
 
   const handlePostDelete = async (postId: string) => {
