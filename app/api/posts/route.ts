@@ -39,101 +39,55 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Something went wrong' }, { status: 500 })
   }
 }
- 
+
 
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     const currentUserId = session?.user?.id;
 
-    const searchParams = request.nextUrl.searchParams;
-    const cursor = searchParams.get("cursor");
+    const { searchParams } = new URL(request.url);
+    const cursor = searchParams.get("cursor");  
     const limit = 10;
 
-    console.log("\n=== API POSTS REQUEST ===");
-    console.log("Current user ID:", currentUserId);
-    console.log("Cursor received:", cursor);
-
-    // Check total remaining posts
-    const totalRemaining = await prisma.post.count({
-      where: {
-        authorId: {
-          not: currentUserId,
-        },
-        ...(cursor && cursor !== "" && {
-          createdAt: {
-            lt: await prisma.post.findUnique({
-              where: { id: cursor },
-              select: { createdAt: true }
-            }).then(post => post?.createdAt)
-          }
-        }),
-      },
-    });
-
-    console.log("Total remaining posts:", totalRemaining);
-
     const posts = await prisma.post.findMany({
+      // 1. Fetch one extra to see if there is a "Next Page"
       take: limit + 1,
-      ...(cursor && cursor !== "" && {
-        skip: 1,
-        cursor: {
-          id: cursor,
-        },
-      }),
+      
+      // 2. ONLY skip and use cursor if a cursor actually exists
+      ...(cursor ? {
+        skip: 1, 
+        cursor: { id: cursor },
+      } : {}),
+
       where: {
-        authorId: {
-          not: currentUserId,
-        },
+        authorId: { not: currentUserId },
       },
       include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-          },
-        },
-        likes: {
-          select: {
-            userId: true,
-          },
-        },
-        _count: {
-          select: {
-            likes: true,
-            comments: true,
-          },
-        },
+        author: { select: { id: true, name: true, image: true } },
+        likes: { select: { userId: true } },
+        _count: { select: { likes: true, comments: true } },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      // IMPORTANT: Cursor pagination requires a stable, unique sort
+      orderBy: [
+        { createdAt: "desc" },
+        { id: "asc" } // Secondary sort to prevent logic breaks if 2 posts have same timestamp
+      ],
     });
 
-    console.log("Posts fetched:", posts.length);
-
     let nextCursor: string | undefined = undefined;
-    if (posts.length > limit) {
-      const nextItem = posts.pop();
-      nextCursor = nextItem!.id;
-      console.log("Next cursor:", nextCursor);
-    } else {
-      console.log("No more posts available");
-    }
 
-    console.log("Returning", posts.length, "posts");
-    console.log("=== END API REQUEST ===\n");
+    // 3. If we got 11 items, it means there is more data to fetch
+    if (posts.length > limit) {
+      const nextItem = posts.pop(); // Remove the 11th item
+      nextCursor = nextItem!.id;    // Use its ID as the bookmark for next time
+    }
 
     return NextResponse.json({
       posts,
       nextCursor,
     });
   } catch (error) {
-    console.error("API Error fetching posts:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch posts" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
   }
 }

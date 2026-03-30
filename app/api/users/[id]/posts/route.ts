@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
@@ -22,12 +22,32 @@ export async function GET(
             image: true,
           },
         },
+
+        originalPost: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+            _count: {
+              select: {
+                likes: true,
+                comments: true,
+              },
+            },
+          },
+        },
+
         _count: {
           select: {
             likes: true,
             comments: true,
           },
         },
+
         ...(currentUserId && {
           likes: {
             where: { userId: currentUserId },
@@ -43,14 +63,14 @@ export async function GET(
       isLikedByCurrentUser: currentUserId
         ? (post.likes ?? []).length > 0
         : false,
-      likes: undefined, // remove likes array from response
+      likes: undefined,
     }));
 
     return NextResponse.json(postsWithLikedBy);
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch posts" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

@@ -55,13 +55,16 @@ export default function CreatePost({
         body: JSON.stringify({ content, image: imageUrl }),
         headers: { "Content-Type": "application/json" },
       }
+      
     );
+    const data = await res.json()
     if (res.ok) {
       setContent("");
       setImageUrl(null);
       onClose();
       toast.success(mode === "edit" ? "Post updated!" : "Post created!");
       onPostCreated();
+      console.log(data)
     }
     setLoading(false);
   };

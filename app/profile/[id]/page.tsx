@@ -3,13 +3,14 @@
 import CreatePost from "@/app/__components/post/CreatePost";
 import PostCard from "@/app/__components/post/Post";
 import UserInfo from "@/app/__components/user/UserInfo";
+import { User } from "@/app/generated/prisma/client";
 import PostSkeleton from "@/skeletons/PostSkeleton";
 import { usePostsStore } from "@/store/postStore";
 import { useUserStore } from "@/store/userStore";
 import { useEffect, useState } from "react";
 
 const UserPage = () => {
-  const user = useUserStore((state) => state.user);
+  const user = useUserStore((state) => state.user as User);
   const { posts, loading, fetchUserPosts } = usePostsStore();
 
   const [showCreatePost, setShowCreatePost] = useState(false);
@@ -41,7 +42,7 @@ const UserPage = () => {
         initialImage={editPost?.image}
       />
       <div className="flex flex-col md:flex-row gap-4">
-        <UserInfo />
+        <UserInfo user={user}/>
 
         <div className="md:w-1/2">
           <button
@@ -60,6 +61,8 @@ const UserPage = () => {
                   key={post.id}
                   post={post}
                   fetchPosts={() => fetchUserPosts(user?.id || "")}
+                  isRepost={!!post.repostingPostId}
+                  originalPost={post.originalPost}
                   onEdit={(post: any) =>
                     setEditPost({
                       id: post.id,
@@ -67,7 +70,7 @@ const UserPage = () => {
                       image: post.image,
                     })
                   }
-                />
+                /> 
               ))
             )}
 

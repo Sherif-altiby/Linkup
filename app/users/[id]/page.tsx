@@ -8,6 +8,7 @@ import { usePostsStore } from "@/store/postStore";
 import { PostWithAuthor } from "@/app/__types";
 import PostCard from "@/app/__components/post/Post";
 import PostSkeleton from "@/skeletons/PostSkeleton";
+import UserInfo from "@/app/__components/user/UserInfo";
 
 const IconMessage = () => (
   <svg
@@ -164,100 +165,7 @@ export default function UserViewPage() {
       <div className="mx-auto px-4 py-10">
         <div className="flex flex-col md:flex-row gap-10 container">
           {/* ── LEFT: Profile Card ── */}
-          <div className="md:w-1/2">
-            <div className="sticky top-8 flex flex-col gap-4">
-              {/* Main info card */}
-              <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
-                {/* Card top accent */}
-                <div className="h-20 bg-linear-to-br from-gray-800 to-gray-900 relative">
-                  <div
-                    className="absolute inset-0 opacity-30"
-                    style={{
-                      background:
-                        "radial-gradient(ellipse at 30% 60%, var(--secondary-color, #7c3aed) 0%, transparent 65%)",
-                    }}
-                  />
-                </div>
-
-                <div className="px-5 pb-5">
-                  {/* Avatar */}
-                  <div className="-mt-10 mb-4">
-                    <div className="w-20 h-20 rounded-2xl bg-gray-800 border-4 border-gray-900 overflow-hidden shadow-xl flex items-center justify-center">
-                      {user?.image ? (
-                        <Image
-                          src={user?.image}
-                          alt={user.name || "user Imahe"}
-                          className="w-full h-full object-cover"
-                          width={50}
-                          height={50}
-                        />
-                      ) : (
-                        <span className="text-secondary-color font-black text-3xl">
-                          {user?.name?.[0]?.toUpperCase()}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Name + handle */}
-                  <h2 className="text-white font-bold text-xl leading-tight">
-                    {user?.name}
-                  </h2>
-                  <p className="text-gray-500 text-sm mt-0.5">@{user?.name}</p>
-
-                  {/* Bio */}
-                  {user?.bio && (
-                    <p className="text-gray-400 text-sm leading-relaxed mt-3">
-                      {user.bio}
-                    </p>
-                  )}
-
-                  {/* Action buttons */}
-                  <div className="flex gap-2.5 mt-4">
-                    <button
-                      onClick={() => followUser(user?.id || "")}
-                      className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                        followed
-                          ? "bg-gray-800 border border-gray-700 text-gray-300 hover:border-red-500/50 hover:text-red-400"
-                          : "bg-secondary-color text-white hover:opacity-90"
-                      }`}
-                    >
-                      {followed ? <IconUserCheck /> : <IconUserPlus />}
-                      {followed ? "Following" : "Follow"}
-                    </button>
-                    <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold bg-gray-800 border border-gray-700 text-gray-300 hover:border-gray-600 hover:text-white transition-all">
-                      <IconMessage />
-                      Message
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Details card */}
-              <div className="px-6 py-5 space-y-3">
-                {details.map((item) =>
-                  item.value ? (
-                    <div
-                      key={item.label}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-gray-800/60 border border-gray-800 hover:border-amber-500/30 transition-colors duration-200"
-                    >
-                      <span className="text-amber-500 shrink-0">
-                        {item.icon}
-                      </span>
-                      <div className="min-w-0">
-                        <p className="text-xs font-medium tracking-widest uppercase text-gray-500 leading-none mb-0.5">
-                          {item.label}
-                        </p>
-                        <p className="text-sm text-gray-200 truncate">
-                          {item.value}
-                        </p>
-                      </div>
-                    </div>
-                  ) : null,
-                )}
-              </div>
-            </div>
-          </div>
+           <UserInfo  user={user as User}/>
 
           {/* ── RIGHT: Posts ── */}
           <div className="md:w-1/2">
@@ -271,8 +179,8 @@ export default function UserViewPage() {
             {loading ? (
               <PostSkeleton />
             ) : (
-              posts.map((post: PostWithAuthor) => (
-                <PostCard key={post.id} post={post} />
+              posts.map((post: any) => (
+                <PostCard key={post.id} post={post} isRepost={!!post.repostingPostId} originalPost={post.originalPost} />
               ))
             )}
           </div>

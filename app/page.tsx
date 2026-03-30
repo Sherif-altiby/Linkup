@@ -1,6 +1,7 @@
 import Feed from "./__components/home/Feed";
 import LeftSideBar from "./__components/home/LeftSideBar";
 import RightSideBar from "./__components/home/RightSideBar";
+import InfiniteFeed from "./__components/home/test";
 
 
 export default async function Home() {
@@ -11,7 +12,8 @@ export default async function Home() {
                 
                 <div className="flex gap-4 py-5 container" >
                     <LeftSideBar />
-                      <Feed/>
+                      {/* <Feed/> */}
+                      <InfiniteFeed />
                     <RightSideBar />
                 </div>
         </main>

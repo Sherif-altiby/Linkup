@@ -1,45 +1,49 @@
 "use client";
 
-import Image from "next/image";
 import { PostWithAuthor } from "../../__types";
-import { timeAgo } from "@/lib/timeCalc";
 import PostDropdownMenu from "./PostDropdownMenu";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { AiFillLike } from "react-icons/ai";
-import { FaCommentDots } from "react-icons/fa";
-import { BiRepost } from "react-icons/bi";
-import AddComment from "./AddComment";
-import Link from "next/link";
-import AvatarLik from "../nav/NavLink";
 import { useUserStore } from "@/store/userStore";
+import PostImage from "./PostImage";
+import PostReaches from "./PostReaches";
+import PostActions from "./PostActions";
+import PostHeader from "./PostHeader";
+import Image from "next/image";
 
 export default function PostCard({
   post,
   fetchPosts,
   onEdit,
+  isRepost,
+  originalPost,
 }: {
   post: PostWithAuthor;
   fetchPosts?: () => void;
   onEdit?: (post: any) => void;
+  isRepost: boolean;
+  originalPost: string;
 }) {
   const [show, setShow] = useState(false);
-  const [showAddComment, setShowAddComment] = useState(false);
 
   const [likeCount, setLikeCount] = useState(post?._count?.likes || 0);
   const [comentCount, setCommentCont] = useState(post?._count?.comments || 0);
 
-  const user = useUserStore(state => state.user)
+  const user = useUserStore((state) => state.user);
 
-  const [isCurrentUserLikedPost, setIsCurrentUserLikedpost]  = useState(false)
+  const [isCurrentUserLikedPost, setIsCurrentUserLikedpost] = useState(false);
 
   useEffect(() => {
-      setIsCurrentUserLikedpost(post.likes?.some((like) => like.userId === user?.id))
-  }, [user])
+    setIsCurrentUserLikedpost(
+      post.likes?.some((like) => like.userId === user?.id),
+    );
+  }, [user]);
 
   const handlePostDelete = async (postId: string) => {
     try {
-      const res: any = await fetch(`/api/posts/${postId}`, { method: "DELETE" });
+      const res: any = await fetch(`/api/posts/${postId}`, {
+        method: "DELETE",
+      });
       if (res.ok) {
         toast.success(res.message || "Post deleted successfully!");
         fetchPosts && fetchPosts();
@@ -62,7 +66,26 @@ export default function PostCard({
   };
 
   return (
-    <div className="w-full  mx-auto bg-gray-900 border border-gray-800 rounded-2xl shadow-xl mb-5 overflow-hidden relative">
+    <div
+      className={`w-full  mx-auto   border-gray-800 rounded-2xl shadow-xl mb-5 overflow-hidden relative  bg-gray-900 border`}
+    >
+
+      {isRepost && (<div className="flex items-center border-b py-3 gap-1 px-4 border-gray-800" > 
+        <div className="flex items-center gap-2" >
+           <div className="size-8 rounded-full" >
+            <Image
+                src={post.author.image || "default-avatar.png"}
+                alt="Image Author"
+                width={40}
+                height={40}
+                className="rounded-full object-cover"
+            />
+         </div>
+          <h3> {post.author.name} </h3>
+        </div>
+         <p className="text-ms text-gray-600" > Reposted this </p>
+      </div>)}
+
       <PostDropdownMenu
         id={post.author.id}
         show={show}
@@ -74,102 +97,41 @@ export default function PostCard({
         }}
       />
 
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 pt-5 pb-4">
-        <div className="flex items-center gap-3">
-             <AvatarLik href={`/users/${post.authorId}`} image={post.author.image || "default-avatar.png"} />         
-          <div>
-            <h3 className="font-semibold text-gray-100 text-sm leading-tight">
-              {post.author.name}
-            </h3>
-            <p className="text-xs text-gray-500 mt-0.5">{timeAgo(post.createdAt)}</p>
-          </div>
-        </div>
-
-        <button
-          className="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:text-amber-500 hover:bg-gray-800 transition-all duration-200 text-lg leading-none"
-          onClick={() => setShow((prev) => !prev)}
-        >
-          •••
-        </button>
-      </div>
+      <PostHeader
+        authorId={post.author.id}
+        authorImg={(isRepost ? post.originalPost.author.image  : post.author.image) || "default-avatar.png"}
+        authorName={(isRepost ? post.originalPost.author.name : post.author.name) || "author name"}
+        postTime={post.createdAt}
+        setShow={setShow}
+      />
 
       {/* Content */}
       <div className="px-5 pb-4">
-        <p className="text-gray-300 text-sm leading-relaxed">{post.content}</p>
+        <p className="text-gray-300 text-sm leading-relaxed">{ isRepost ? post.originalPost.content :  post.content}</p>
       </div>
 
       {/* Post Image */}
-      {post.image && (
-        <div className="relative w-full h-72 overflow-hidden border-y border-gray-800">
-          <Image
-            src={post.image}
-            alt="post image"
-            className="object-cover w-full h-full hover:scale-105 transition-transform duration-500"
-            width={800}
-            height={400}
-          />
-        </div>
-      )}
+      {post.image && <PostImage  image={post.image} />}
+
+      {post.originalPost?.image && <PostImage  image={post.originalPost.image} />}
+
 
       {/* Like / Comment counts */}
       {(likeCount > 0 || comentCount > 0) && (
-        <div className="flex items-center justify-between px-5 py-2.5 border-b border-gray-800">
-          {post?._count?.likes > 0 && (
-            <div className="flex items-center gap-1.5">
-              <span className="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
-                <AiFillLike className="text-gray-900 text-[10px]" />
-              </span>
-              <span className="text-xs text-gray-500">
-                {likeCount} {likeCount === 1 ? "Like" : "Likes"}
-              </span>
-            </div>
-          )}
-          {post._count.comments > 0 && (
-            <Link href={`comments/${post.id}`} className="text-xs text-gray-500 ml-auto">
-              {post._count.comments} {post._count.comments === 1 ? "Comment" : "Comments"}
-            </Link>
-          )}
-        </div>
+        <PostReaches
+          comments={comentCount}
+          likes={likeCount}
+          postId={post.id}
+        />
       )}
 
       {/* Actions */}
-      <div className="flex items-center px-3 py-1">
-        <button
-          onClick={() => {
-            handleLike()
-            setIsCurrentUserLikedpost(preve => !preve)
-          }}
-          className={`flex items-center gap-2 flex-1 justify-center py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-gray-800 ${
-            isCurrentUserLikedPost ? "text-amber-500" : "text-gray-500 hover:text-amber-500"
-          }`}
-        >
-          <AiFillLike className="text-base" />
-          <span>Like</span>
-        </button>
-
-        <button
-          onClick={() => setShowAddComment((prev) => !prev)}
-          className={`flex items-center gap-2 flex-1 justify-center py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-gray-800 hover:text-amber-500 ${
-            showAddComment ? "text-amber-500" : "text-gray-500"
-          }`}
-        >
-          <FaCommentDots className="text-base" />
-          <p >Comment</p>
-        </button>
-
-        <button className="flex items-center gap-2 flex-1 justify-center py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-gray-800 hover:text-amber-500 transition-all duration-200">
-          <BiRepost className="text-lg" />
-          <span>Repost</span>
-        </button>
-      </div>
-
-      {/* Add Comment */}
-      {showAddComment && (
-        <div className="border-t border-gray-800 px-5 py-4">
-          <AddComment postId={post.id} />
-        </div>
-      )}
+      <PostActions
+        handleLike={handleLike}
+        isCurrentUserLikedPost={isCurrentUserLikedPost}
+        setIsCurrentUserLikedpost={setIsCurrentUserLikedpost}
+        postId={post.id}
+      />
     </div>
   );
 }

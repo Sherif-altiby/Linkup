@@ -3,9 +3,9 @@ import { useUserStore } from "@/store/userStore"
 import Image from "next/image"
 import { useState } from "react"
 import EditUserInfo from "./EditeUserInfo"
+import { User } from "@/app/generated/prisma/client"
 
-const UserInfo = () => {
-  const user = useUserStore((state) => state.user)
+const UserInfo = ({user}: {user: User}) => {
   const [showEdit, setShowEdit] = useState(false)
 
   const details = [
@@ -84,7 +84,7 @@ const UserInfo = () => {
         <div className="bg-gray-900 rounded-2xl border border-gray-800 shadow-2xl overflow-hidden">
 
           {/* Cover + Avatar */}
-          <div className="relative h-28 bg-gradient-to-r from-gray-800 to-gray-900">
+          <div className="relative h-28 bg-linear-to-r from-gray-800 to-gray-900">
             <div
               className="absolute inset-0 opacity-20"
               style={{
