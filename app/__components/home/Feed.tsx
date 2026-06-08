@@ -7,6 +7,8 @@ const Feed = async () => {
   const session = await getServerSession(authOptions);
   const currentUserId = session?.user?.id;
 
+
+
   const posts = await prisma.post.findMany({
     where: {
       authorId: {
@@ -38,6 +40,9 @@ const Feed = async () => {
     },
   });
 
+
+
+  
   return <FeedPosts feedPosts={posts}  />;
 };
 
